@@ -1,11 +1,12 @@
 package main
 
 import (
-	"html/template"
+	"fmt"
 	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/taisukeyamashita/test/routes"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
@@ -15,6 +16,8 @@ func main() {
 
 	// Echoのインスタンスを生成
 	e := echo.New()
+	//routes.Routerで呼び出し
+	routes.Router(e)
 
 	//セッションを設定
 	store := sessions.NewCookieStore([]byte("secret"))
@@ -39,11 +42,11 @@ func main() {
 	//session
 	e.Use(session.Middleware(store))
 
-	renderer := &TemplateRenderer{
-		temp: template.Must(template.ParseGlob("view/*.html")),
-	}
+	// renderer := &TemplateRenderer{
+	// 	temp: template.Must(template.ParseGlob("view/*.html")),
+	// }
 	// テンプレートを利用するためのRendererの設定
-	e.Renderer = renderer
+	// e.Renderer = renderer
 
 	// ミドルウェアを設定
 	e.Use(middleware.Logger())
@@ -56,9 +59,10 @@ func main() {
 	// サーバーをできればポート8080で起動
 	port := os.Getenv("PORT")
 	if port == "" {
+		fmt.Print("main.go = init() >>>>>>>> loadTemplates() called !! \n")
 		port = "8080"
 	}
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":" + port))
 }
 
 // 初期化を行います。

@@ -222,7 +222,7 @@ func init() {
 
 // 各HTMLテンプレートに共通レイアウトを適用した結果を保存します（初期化時に実行）。
 func loadTemplates() {
-	fmt.Print("init() >>>>>>>> loadTemplates() called !! \n")
+	fmt.Print("main.go = init() >>>>>>>> loadTemplates() called !! \n")
 	// var baseTemplate = "view/index.html"
 	// templates = make(map[string]*template.Template)
 	// templates["index"] = template.Must(
