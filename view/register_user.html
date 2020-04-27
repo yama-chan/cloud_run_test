@@ -1,0 +1,341 @@
+{{ define "register_user" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Creative - Bootstrap 3 Responsive Admin Template">
+  <meta name="author" content="GeeksLabs">
+  <meta name="keyword" content="Creative, Dashboard, Admin, Template, Theme, Bootstrap, Responsive, Retina, Minimal">
+  <link rel="shortcut icon" href="static/img/favicon.png">
+
+  <title>Register User</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="static/css/bootstrap.min.css" rel="stylesheet">
+  <!-- bootstrap theme -->
+  <link href="static/css/bootstrap-theme.css" rel="stylesheet">
+  <!--external css-->
+  <!-- font icon -->
+  <link href="static/css/elegant-icons-style.css" rel="stylesheet" />
+  <link href="static/css/font-awesome.min.css" rel="stylesheet" />
+  <!-- Custom styles -->
+  <link href="static/css/style.css" rel="stylesheet">
+  <link href="static/css/style-responsive.css" rel="stylesheet" />
+
+  <style>
+    img {
+    width:auto;
+    height:auto;
+    max-width:100%;
+    max-height:100%;
+    background-color: white;
+    }
+    .img_block img{
+      display: block;
+      margin:auto;
+    }
+
+    .profile-widget2 img {
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    width: 82px;
+    height: 82px;
+    display: inline-block;
+    }
+
+    #input-file-label {
+      color: white;  
+      background-color: red;
+      padding: 6px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+  </style>
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 -->
+  <!--[if lt IE 9]>
+      <script src="static/js/html5shiv.js"></script>
+      <script src="static/js/respond.min.js"></script>
+      <script src="static/js/lte-ie7.js"></script>
+    <![endif]-->
+
+    <!-- =======================================================
+      Theme Name: NiceAdmin
+      Theme URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+      Author: BootstrapMade
+      Author URL: https://bootstrapmade.com
+    ======================================================= -->
+</head>
+
+<body>
+  <!-- container section start -->
+  <section id="container" class="">
+    
+    <!--header start-->
+    {{ template "header" .}}
+    <!--header end-->
+
+    <!--sidebar start-->
+    {{ template "sidebar" .}}
+    <!--sidebar end-->
+
+    <!--main content start-->
+    <section id="main-content">
+      <section class="wrapper">
+        <div class="row">
+          <div class="col-lg-12">
+            <h3 class="page-header"><i class="fa fa-files-o"></i> Register User</h3>
+            <ol class="breadcrumb">
+              <li><i class="fa fa-home"></i><a href="/index">Home</a></li>
+              <li><i class="icon_document_alt"></i>Forms</li>
+              <li><i class="fa fa-files-o"></i>Register User</li>
+            </ol>
+          </div>
+        </div>
+        <!-- Form validations -->
+        <div class="row">
+          <div class="col-lg-12">
+            <section class="panel">
+              <header class="panel-heading">
+                Register User
+              </header>
+                <div class="form">
+                  <form class="form-horizontal" id="image_form" method="post" action="/addUser" enctype="multipart/form-data">
+                    <div class="profile-widget2 profile-widget-info">
+                      <div class="panel-body" style="text-align: center;color: aliceblue;">
+                        <h4>プロフィール画像
+
+                          <!-- ************************** -->
+                          <!-- <input type="file"> そのものにはCSSが効かず、スタイルを変更できません。 -->
+                          <!-- そこで、<input> 自体は非表示にし、<label> で修飾します。 -->
+                          <!-- ************************** -->
+                          <label id="input-file-label" for="exampleInputFile">
+                            ＋写真を選択
+                            <input type="file" accept="image/*" id="exampleInputFile" multiple="multiple" name="upload" style="display:none;">
+                          </label>
+                        </h4>
+                        <div class="follow-ava img_block">
+                            <!-- <img src="static/img/profile-widget-avatar.jpg" alt=""> -->
+                          {{ if (eq .IconURL "")}}
+                          <img id="preview" alt="" >
+                          {{ else }}
+                          <img id="preview" src="{{ .IconURL }}" >
+                          {{ end }}
+                        </input>
+                      </div>
+                    </div>
+                  </div>
+                  <input type="hidden" name="userId" id="userId" value="{{ .ID }}">                        
+                  <!-- hidden項目およびボタン -->
+                  <!-- <div class="form-group" style="visibility: hidden;">
+                    <div class="col-lg-offset-2 col-lg-10">
+                      <input type="hidden" name="userId" id="userId" value="{{ .ID }}">                        
+                      <button id="btn-save-image" class="btn btn-primary" type="submit" name="action" value="uploadImage">Save</button> -->
+                      <!-- ボタンをaタグで囲むことでGETリクエストを送信する -->
+                    </div>
+                  </div>
+              <!-- </form> -->
+              </div>
+              <div class="panel-body">
+                <div class="form form-horizontal">
+                  <!-- <form class="form-validate form-horizontal" id="feedback_form" method="post" action="/editUser"> -->
+                  <!-- <form class="form-horizontal" id="" method="post" action="/addUser" enctype="multipart/form-data"> -->
+
+                    <!-- 名前 -->
+                    <div class="form-group ">
+                      <label for="cname" class="control-label col-lg-2">Full Name <span class="required">*</span></label>
+                      <div class="col-lg-10">
+                        <input class="form-control" id="cname" name="fullname" value="{{.Fullname}}" type="text" required />
+                      </div>
+                    </div>
+
+                    <!-- 性別 -->
+                    <div class="form-group">
+                        <label class="control-label col-lg-2" for="inputSuccess">Gendar<span class="required">*</span></label>
+                      <div class="col-lg-10">
+                        <label class="checkbox-inline">
+                            {{ if ( eq .Sex "man")}}
+                            <input type="radio" id="inlineCheckbox1" name="sex" value="man" checked > 男性
+                            {{ else }}
+                            <input type="radio" id="inlineCheckbox2" name="sex" value="man"> 男性
+                            {{ end }}
+                        </label>
+                        <label class="checkbox-inline">
+                            {{ if ( eq .Sex "woman")}}
+                            <input type="radio" id="inlineCheckbox3" name="sex" value="woman" checked > 女性
+                            {{ else }}
+                            <input type="radio" id="inlineCheckbox4" name="sex" value="woman"> 女性
+                            {{ end }}
+                        </label>    
+                      </div>
+                    </div>
+                    <!-- メールアドレス -->
+                    <div class="form-group ">
+                      <label for="cemail" class="control-label col-lg-2">E-Mail <span class="required">*</span></label>
+                      <div class="col-lg-10">
+                        <input class="form-control " id="cemail" type="email" name="email" value="{{ .Email }}" required />
+                      </div>
+                    </div>
+                    <!-- <div class="form-group ">
+                      <label for="curl" class="control-label col-lg-2">Website</label>
+                      <div class="col-lg-10">
+                        <input class="form-control " id="curl" type="url" name="url" />
+                      </div>
+                    </div> -->
+
+                    <!-- 部署 -->
+                    <div class="form-group ">
+                      <label for="cname" class="control-label col-lg-2">Department <span class="required">*</span></label>
+                      <div class="col-lg-10">
+                        <input class="form-control" id="subject" name="department" minlength="5" type="text" value="{{ .Department }}" required />
+                      </div>
+                    </div>
+
+                    <!-- 説明 -->
+                    <div class="form-group ">
+                      <label for="ccomment" class="control-label col-lg-2">Description</label>
+                      <div class="col-lg-10">
+                        <textarea class="form-control " id="ccomment" name="comment"  required>{{ .Description }}</textarea>
+                      </div>
+                    </div>
+                      
+                    <!-- hidden項目およびボタン -->
+                    <div class="form-group">
+                      <div class="col-lg-offset-2 col-lg-10">
+                          <input type="hidden" name="iconURL" id="iconURL" value="{{ .IconURL }}">                        
+                          <input type="hidden" name="userId" id="userId" value="{{ .ID }}">                        
+                          <button class="btn btn-primary" type="submit">Save</button>
+                          <!-- <button id="save-btn-user" class="btn btn-primary" type="button">Save</button> -->
+                        <!-- ボタンをaタグで囲むことでGETリクエストを送信する -->
+                        <a href="/index">
+                          <button class="btn btn-default" type="button">Cancel</button>
+                        </a>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+              </div>
+            </section>
+          </div>
+        </div>
+        <!-- page end-->
+      </section>
+    </section>
+    <!--main content end-->
+
+    {{ template "credits" .}}
+
+  </section>
+  <!-- container section end -->
+
+  <!-- javascripts -->
+  <script src="static/js/jquery.js"></script>
+  <script src="static/js/bootstrap.min.js"></script>
+  <!-- nice scroll -->
+  <script src="static/js/jquery.scrollTo.min.js"></script>
+  <script src="static/js/jquery.nicescroll2.js" type="text/javascript"></script>
+  <!-- jquery validate js -->
+  <script type="text/javascript" src="static/js/jquery.validate.min.js"></script>
+
+  <!-- custom form validation script for this page-->
+  <script src="static/js/form-validation-script.js"></script>
+  <!--custome script for all page-->
+  <script src="static/js/scripts.js"></script>
+
+  <script>
+
+    //選択した画像ファイルを選択後に表示する処理
+    $('#exampleInputFile').on('change', function (e) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+          $("#preview").attr('src', e.target.result);
+      }
+      reader.readAsDataURL(e.target.files[0]);
+    });
+
+
+    // === javascriptのみでフォーム送信を行うなら以下 ===
+
+    // $('#save-btn-user').on('click', function (e) {
+    //   postForm();
+    // });
+
+    // function postForm(){
+    //   var form = document.getElementById("image_form");
+  
+    //   // form.method = 'POST';
+    //   // form.action = 'https://httpbin.org/post';
+
+    //   var request1 = document.createElement('input');//名前
+    //   var request2 = document.createElement('input');//性別
+    //   var request3 = document.createElement('input');//メール
+    //   var request4 = document.createElement('input');//部署
+    //   var request5 = document.createElement('input');//説明
+    //   var request6 = document.createElement('input');//hidden
+    //   var request7 = document.createElement('input');//hidden
+    //   var request8 = document.createElement('input');//hidden
+
+    //   request1.type = 'hidden'; //入力フォームが表示されないように
+    //   request1.name = 'fullname';
+    //   request1.value = document.getElementById("cname").value;
+
+    //   //性別選択のラジオボタンの値を取得する
+    //   var radioList = document.getElementsByName('sex');
+    //   request2.type = 'hidden'; //入力フォームが表示されないように
+    //   request2.name = 'sex';
+    //   for (  var i = 0;  i < radioList.length;  i++  ) {
+    //     if(radioList[i].checked){
+    //       request2.value = radioList[i].value;
+    //     }
+    //   }
+  
+    //   request3.type = 'hidden'; //入力フォームが表示されないように
+    //   request3.name = 'email';
+    //   request3.value = document.getElementById("cemail").value;
+  
+    //   request4.type = 'hidden'; //入力フォームが表示されないように
+    //   request4.name = 'department';
+    //   request4.value = document.getElementById("subject").value;
+  
+    //   request5.type = 'hidden'; //入力フォームが表示されないように
+    //   request5.name = 'comment';
+    //   request5.value = document.getElementById("ccomment").value;
+
+    //   request6.type = 'hidden'; //入力フォームが表示されないように
+    //   request6.name = 'userId';
+    //   request6.value = document.getElementById("userId").value;
+    
+    //   request7.type = 'hidden'; //入力フォームが表示されないように
+    //   request7.name = 'iconURL';
+    //   request7.value = document.getElementById("iconURL").value;
+    
+    //   request8.type = 'hidden'; //入力フォームが表示されないように
+    //   request8.name = 'action';
+    //   request8.value = '';
+    
+    //   form.appendChild(request1);
+    //   form.appendChild(request2);
+    //   form.appendChild(request3);
+    //   form.appendChild(request4);
+    //   form.appendChild(request5);
+    //   form.appendChild(request6);
+    //   form.appendChild(request7);
+    //   form.appendChild(request8);
+
+    //   document.body.appendChild(form);
+  
+    //   form.submit();
+    //   // document.getElementById("btn-save-image").click();
+    // }
+
+  </script>
+
+
+</body>
+
+</html>
+{{ end }}

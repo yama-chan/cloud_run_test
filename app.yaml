@@ -1,0 +1,21 @@
+# app.yaml
+runtime: go111
+service: default
+
+handlers:
+- url: /.*
+  script: auto
+
+- url: /static
+  # static_files: static/
+  static_dir: static
+  # upload: static/(.*)
+
+
+# threadsafe: true #非推奨なのでコメント
+
+# automatic_scaling:
+#   min_idle_instances: 1   # idle状態にあるインスタンスの最小値  minを1にする事でインスタンスが落ちるのも避けています。
+#   max_idle_instances: 1        # idle状態にあるインスタンスの最大値
+#   min_pending_latency: 3000ms  # リクエストを処理するまでに許される待ち時間の最小
+#   max_pending_latency: automatic
