@@ -11,8 +11,8 @@ import (
 	// "github.com/labstack/echo"
 	// "github.com/labstack/echo/middleware"
 
-	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"google.golang.org/appengine"
 
 	// "google.golang.org/appengine"
@@ -84,7 +84,7 @@ var (
 // Cookie型のstore情報
 var store *sessions.CookieStore
 
-func main() {
+func _main() {
 
 	//************ Echo ************ satrt
 	// Echoのインスタンスを生成
