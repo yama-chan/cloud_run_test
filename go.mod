@@ -3,7 +3,9 @@ module github.com/taisukeyamashita/test
 require (
 	cloud.google.com/go/bigquery v1.6.0 // indirect
 	cloud.google.com/go/datastore v1.1.0
+	cloud.google.com/go/firestore v1.2.0
 	cloud.google.com/go/storage v1.6.0
+	firebase.google.com/go v3.12.1+incompatible
 	github.com/gorilla/sessions v1.2.0
 	github.com/labstack/echo v3.3.10+incompatible // indirect
 	github.com/labstack/echo-contrib v0.6.0
@@ -11,6 +13,7 @@ require (
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/rs/xid v1.2.1
 	github.com/valyala/fasttemplate v1.1.0 // indirect
+	google.golang.org/api v0.21.0
 	google.golang.org/appengine v1.6.5
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 )
