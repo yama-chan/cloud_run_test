@@ -16,10 +16,22 @@ var (
 	k_configuration = os.Getenv("K_CONFIGURATION")
 )
 
+type Firestore struct {
+	client *firestore.Client
+}
+
+func NewFirestore(ctx context.Context) Firestore {
+	return Firestore{
+		client: firestoreClient(ctx),
+	}
+}
+
 func firestoreClient(ctx context.Context) *firestore.Client {
 	// Use the application default credentials
 	// ctx := context.Background()
-	conf := &firebase.Config{ProjectID: projectID}
+	conf := &firebase.Config{
+		ProjectID: projectID,
+	}
 	app, err := firebase.NewApp(ctx, conf)
 	if err != nil {
 		log.Fatalln(err)

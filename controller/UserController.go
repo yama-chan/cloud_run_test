@@ -134,7 +134,7 @@ func AddRegisteredUser(r *http.Request) bool {
 		IsDeleted:      false,
 		RegisteredDate: time.Now().Format(format)}
 
-	log.Print(user)
+	log.Println(user)
 
 	// //自動的にエンティティのキーとして数値IDを取得
 	// key := datastore.NewIncompleteKey(ctx, "user", nil)

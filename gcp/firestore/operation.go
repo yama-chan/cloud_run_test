@@ -1,14 +1,13 @@
 package firestore
 
 import (
+	"context"
 	"log"
-
-	"cloud.google.com/go/firestore"
 )
 
-func (*firestore.Client) Insert() {
+func (f Firestore) Insert(ctx context.Context) error {
 	// データ追加
-	_, _, err = client.Collection("users").Add(ctx, map[string]interface{}{
+	_, _, err := f.client.Collection("test").Add(ctx, map[string]interface{}{
 		"first": "Ada",
 		"last":  "Lovelace",
 		"born":  1815,
@@ -16,4 +15,5 @@ func (*firestore.Client) Insert() {
 	if err != nil {
 		log.Fatalf("Failed adding alovelace: %v", err)
 	}
+	return err
 }
