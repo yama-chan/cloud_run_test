@@ -5,14 +5,7 @@ import (
 	"log"
 	"os"
 
-	// "github.com/labstack/echo/middleware"
-
-	// "github.com/labstack/echo/v4"
-
-	// "google.golang.org/appengine"
-	// "google.golang.org/appengine/datastore"
 	"cloud.google.com/go/datastore"
-	// "github.com/labstack/echo"
 )
 
 var (
