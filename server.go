@@ -14,10 +14,14 @@ func main() {
 	// Echoのインスタンスを生成
 	e := echo.New()
 	// ミドルウェアを設定
+	//全てのリクエストについてアクセスログを取得
 	e.Use(middleware.Logger())
+	//アプリケーションの内部でpanicが発生した場合でも、一律共通のエラーハンドラに処理を飛ばす
 	e.Use(middleware.Recover())
-	//routes.Routerで呼び出し
-	routes.Router(e)
+
+	//routes.AddRoutersで呼び出し
+	//簡単なマイクロサービスならこのルーティングを使用できそう
+	routes.AddRouters(e)
 	// サーバーをポート8080で起動
 	port := os.Getenv("PORT")
 	if port == "" {

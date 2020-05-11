@@ -21,11 +21,11 @@ type Datastore struct {
 
 func NewDatastore(ctx context.Context) Datastore {
 	return Datastore{
-		client: datastoreClient(ctx),
+		client: DatastoreClient(ctx),
 	}
 }
 
-func datastoreClient(ctx context.Context) *datastore.Client {
+func DatastoreClient(ctx context.Context) *datastore.Client {
 	client, err := datastore.NewClient(ctx, projectID)
 	if err != nil {
 		log.Fatalln("fail to datastoreClient :" + err.Error())

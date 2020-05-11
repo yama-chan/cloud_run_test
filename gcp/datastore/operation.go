@@ -8,8 +8,36 @@ import (
 	"sync"
 
 	"cloud.google.com/go/datastore"
+	"github.com/taisukeyamashita/test/lib/config"
+	"github.com/taisukeyamashita/test/lib/errs"
+	utils "github.com/taisukeyamashita/test/lib/util"
 	"github.com/taisukeyamashita/test/model"
 )
+
+type DatastoreOperator interface {
+	DatastoreClient() *datastore.Client
+	Put(ctx context.Context, userInf *model.UserInf) error
+}
+
+type Config struct {
+	ProjectID string
+}
+
+type Operator struct {
+	Client *datastore.Client
+	Config Config
+}
+
+var _ DatastoreOperator = &Operator{}
+
+func ProvideDatastoreOperator(client *datastore.Client) *Operator {
+	return &Operator{
+		Client: client,
+		Config: Config{
+			ProjectID: config.ProjectID,
+		},
+	}
+}
 
 //lessonのスライスを型宣言
 //※一覧にて表示するため変数名を大文字で始めることでpublicな変数として扱う。
@@ -30,6 +58,49 @@ type Lesson struct {
 	Description      string
 	RegisteredDate   string
 	LastModifiedDate string
+}
+
+// type TestUser datastore.Entity{
+// 	kind string
+// }
+
+func (op *Operator) DatastoreClient() *datastore.Client {
+	return op.Client
+}
+
+func (op *Operator) Put(ctx context.Context, userInf *model.UserInf) error {
+	var (
+		taskKey *datastore.Key
+		err     error
+	)
+	kind := "user"
+	if userInf.EncodedKey != "" {
+		enKey := userInf.EncodedKey
+		taskKey, err = datastore.DecodeKey(enKey)
+		if err != nil {
+			s := []string{"Failed to DecodeKey:", err.Error()}
+			log.Println(strings.Join(s, ""))
+			return errs.WrapXerror()
+		}
+	} else {
+		// taskKey = datastore.IncompleteKey(kind, nil)
+		taskKey = datastore.NameKey(kind, utils.CreateUniqueId(), nil)
+	}
+	//保存対象の構造体のポインタを引数に定義しPUT
+	if taskKey != nil {
+		_, err := op.Client.RunInTransaction(ctx, func(tx *datastore.Transaction) error {
+			//keyを暗号化して保存（更新用）
+			userInf.EncodedKey = taskKey.Encode()
+			if _, err := tx.Put(ctx, taskKey, userInf); err != nil {
+				return err
+			}
+			fmt.Printf("Saved %v: %v\n", taskKey, userInf.Fullname)
+		})
+		if err != nil {
+			return errs.WrapXerror(err)
+		}
+	}
+	return nil
 }
 
 func (ds Datastore) Put(ctx context.Context, userInf *model.UserInf) error {

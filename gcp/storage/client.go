@@ -14,7 +14,7 @@ var (
 	k_configuration = os.Getenv("K_CONFIGURATION")
 )
 
-func storageClient(ctx context.Context) *storage.Client {
+func StorageClient(ctx context.Context) *storage.Client {
 	client, err := storage.NewClient(ctx)
 	if err != nil {
 		panic(err)
