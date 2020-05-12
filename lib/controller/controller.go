@@ -85,7 +85,7 @@ func (controller ControllerBase) addEndPoints(method string, group *echo.Group, 
 	}
 }
 
-// 'echo.HandlerFunc{ func(Context) error }'を'endPoint.Handler( lib.EndPointHandler )'から作成する
+// endPoint.Handler( lib.EndPointHandler )' から 独自の'echo.HandlerFunc{ func(Context) error }'を作成する
 func (controller ControllerBase) endPointHandlerToEchoHandler(handler lib.EndPointHandler) echo.HandlerFunc {
 	return func(context echo.Context) error { // HandlerFuncは、HTTPリクエストを処理する関数を定義します。
 		// l := controller.Provider.Logger(context.Request().Context())
@@ -96,7 +96,7 @@ func (controller ControllerBase) endPointHandlerToEchoHandler(handler lib.EndPoi
 		if err != nil {
 			return errs.WrapXerror(err)
 		}
-		return rerender.Render(context)
+		return rerender.Render(context) // errorを返してecho.HandlerFuncとしてreturnする
 	}
 }
 
