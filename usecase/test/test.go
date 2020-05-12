@@ -9,6 +9,7 @@ import (
 	"github.com/taisukeyamashita/test/lib/times"
 	utils "github.com/taisukeyamashita/test/lib/util"
 	"github.com/taisukeyamashita/test/model"
+	"github.com/taisukeyamashita/test/usecase"
 )
 
 type TestUsecase struct {
@@ -16,7 +17,9 @@ type TestUsecase struct {
 	DatastoreOperator datastore.DatastoreOperator
 }
 
-func ProvideTestUsecase(s storage.StorageOpeator, d datastore.DatastoreOperator) *TestUsecase {
+var _ usecase.Usecase = &TestUsecase{}
+
+func ProvideTestUsecase(ctx context.Context, s storage.StorageOpeator, d datastore.DatastoreOperator) *TestUsecase {
 	return &TestUsecase{
 		StorageOperator:   s,
 		DatastoreOperator: d,
@@ -34,9 +37,9 @@ func (t TestUsecase) Insert(ctx context.Context) error {
 		LastModifiedDate: times.CurrentTime().Format(format),
 	}
 	putErr := t.DatastoreOperator.Put(ctx, &user)
-	if err != nil {
+	if putErr != nil {
 		//  「: %v」 とすることで既存のerrorの情報を出力する
-		return errs.ASxerror("Insert", putErr)
+		return errs.WrapXerror(putErr)
 	}
 	return nil
 }

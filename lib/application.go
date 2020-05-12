@@ -1,11 +1,11 @@
-package server
+package lib
 
 import (
 	"fmt"
 	"log"
 	"net/http"
 
-	lib "github.com/taisukeyamashita/test/lib/controller"
+	"github.com/taisukeyamashita/test/lib/controller"
 	"github.com/taisukeyamashita/test/lib/env"
 )
 
@@ -25,7 +25,7 @@ func (application Application) Initialize() {
 }
 
 // Run Application実行
-func (application Application) Run(controllers ...lib.Controller) {
+func (application Application) Run(controllers ...controller.Controller) {
 	registControllers := application.BuildRouter(controllers...)
 	port := application.env.Port()
 	if port == "" {
@@ -36,7 +36,7 @@ func (application Application) Run(controllers ...lib.Controller) {
 }
 
 // BuildRouter ルーターを構築する
-func (application Application) BuildRouter(controllers ...lib.Controller) http.Handler {
+func (application Application) BuildRouter(controllers ...controller.Controller) http.Handler {
 	mux := http.NewServeMux()
 	for _, controller := range controllers {
 		controller.RegistControllers(mux)

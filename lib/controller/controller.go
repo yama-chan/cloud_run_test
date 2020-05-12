@@ -1,8 +1,9 @@
-package lib
+package controller
 
 import (
 	"fmt"
 	"net/http"
+	"reflect"
 
 	"github.com/labstack/echo"
 	"github.com/taisukeyamashita/test/lib/errs"
@@ -17,13 +18,15 @@ type Controller interface {
 
 // ControllerBase 既定コントローラ
 type ControllerBase struct {
-	Echo     echo.Echo
+	Echo     *echo.Echo
 	Provider server.Provider
 }
+// ControllerBase implement http.Handler
+var _ http.Handler = ControllerBase{}
 
 // ServeHTTP implements `http.Handler` interface, which serves HTTP requests.
-func (controller ControllerBase) ServeHTTP(w http.ResponseWriter, r http.Request) {
-	return c.Echo.ServeHTTP(w, r)
+func (controller ControllerBase) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	c.Echo.ServeHTTP(w, r)
 }
 
 // NewController Controllerを作成
@@ -47,8 +50,8 @@ func NewController(provider server.Provider) ControllerBase {
 }
 
 // AddRoutes Route登録
-func (controller ControllerBase) AddRoutes(group *echo.Group, router Router) {
-	reflectedRouter := reflect.ValueOf(router)
+func (controller ControllerBase) AddRoutes(group *echo.Group, router interface{}) {
+	reflectedRouter := reflect.ValueOf(router).Elem()
 	providerValue := reflect.ValueOf(controller.Provider)
 	for index := 0; index < reflectedRouter.NumMethod(); index++ {
 		method := reflectedRouter.Method(index)

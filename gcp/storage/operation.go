@@ -35,7 +35,7 @@ type Operator struct {
 
 var _ StorageOpeator = &Operator{}
 
-func ProvideStorageOpeator(client *storage.Client) *Operator {
+func ProvideStorageOpeator(client *storage.Client) StorageOpeator {
 	return &Operator{
 		Client: client,
 		Config: Config{

@@ -50,7 +50,7 @@ func NewLogger() logger.Logger {
 		//ログの記載を'Lock'するためにsync.Mutexをフィールドに持っているためポインタ(&)で渡すこと
 		logger: &logrus.Logger{
 			Out:          os.Stdout,
-			Formatter:    new(logrus.JSONFormatter),
+			Formatter:    new(logrus.TextFormatter),
 			Hooks:        make(logrus.LevelHooks),
 			Level:        logrus.DebugLevel,
 			ExitFunc:     os.Exit,

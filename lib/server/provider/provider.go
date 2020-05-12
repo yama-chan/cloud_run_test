@@ -1,14 +1,14 @@
-package server
+package provider
 
 import (
 	"context"
 	"net/http"
 	"strings"
 
-	"cloud.google.com/go/datastore"
-	"cloud.google.com/go/storage"
-	datastore2 "github.com/taisukeyamashita/test/gcp/datastore"
-	storage2 "github.com/taisukeyamashita/test/gcp/storage"
+	datastore3 "cloud.google.com/go/datastore"
+	storage3 "cloud.google.com/go/storage"
+	"github.com/taisukeyamashita/test/gcp/datastore"
+	"github.com/taisukeyamashita/test/gcp/storage"
 	"github.com/taisukeyamashita/test/lib/errs"
 	"github.com/taisukeyamashita/test/lib/server"
 	testusecase "github.com/taisukeyamashita/test/usecase/test"
@@ -27,28 +27,28 @@ var (
 )
 
 // AppProvider ユースケースの提供を行うプロバイダー implement Provider interface
-type AppProvider struct{}
+type AppProvider struct {
+	Gcs       storage.StorageOpeator
+	Datastore datastore.DatastoreOperator
+}
 
 var _ server.Provider = &AppProvider{}
 
 type finalizer func() error
 
 // NewAppProvider アプリケーションのプロバイダーを新規生成
-func NewAppProvider() server.Provider {
+func NewAppProvider() *AppProvider {
 	return &AppProvider{}
 }
 
 // TestUsecase テストユースケースを提供
 func (p *AppProvider) TestUsecase(ctx context.Context) *testusecase.TestUsecase {
-	return testusecase.ProvideTestUsecase(
-		p.provideStorageOperator(ctx),
-		p.provideDatastoreOperator(ctx),
-	)
+	return testusecase.ProvideTestUsecase(ctx, p.ProvideStorageOperator(ctx), p.ProvideDatastoreOperator(ctx))
 }
 
 // Context implements server.Provider
 // http.Requestを受けてアプリケーション用のcontext.Contextの成形して返すようにする
-func (p *AppProvider) Context(r http.Request) context.Context {
+func (p *AppProvider) Context(r *http.Request) context.Context {
 	ctx := r.Context()
 	// context からGCPサービスのclientとfinalizer関数を生成
 	// しかし、すでにcontext.Contextにclientがあるならば新規で作成しないように実装すること
@@ -82,55 +82,55 @@ func (p *AppProvider) Finalize(ctx context.Context) error {
 		}
 	}
 	if len(errMsgs) != 0 {
-		return errs.NewXerror(strings.Join(errMsgs, ";"))
+		return errs.NewXerrorWithMessage(strings.Join(errMsgs, ";"))
 	}
 	return nil
 }
 
-func (p *AppProvider) provideStorageOperator(ctx context.Context) storage2.StorageOpeator {
+func (p *AppProvider) ProvideStorageOperator(ctx context.Context) storage.StorageOpeator {
 	client, _ := p.storageClientWithFinalizer(ctx)
-	return storage2.ProvideStorageOpeator(client)
+	return storage.ProvideStorageOpeator(client)
 }
 
-func (p *AppProvider) storageClientWithFinalizer(ctx context.Context) (*storage.Client, finalizer) {
-	closeFn := func(c *storage.Client) finalizer { // finalizer func() error関数を返す関数をスコープ内に生成
+func (p *AppProvider) storageClientWithFinalizer(ctx context.Context) (*storage3.Client, finalizer) {
+	closeFn := func(c *storage3.Client) finalizer { // finalizer func() error関数を返す関数をスコープ内に生成
 		return func() error {
 			go c.Close()
 			return nil
 		}
 	}
 	//すでにcontext.Contextに格納されているclientがあるならば新規で作成しない
-	//context.Contextに格納している*storage.Clientを取得
-	client, ok := ctx.Value(storageClientKey).(*storage.Client)
+	//context.Contextに格納している*storage3.Clientを取得
+	client, ok := ctx.Value(storageClientKey).(*storage3.Client)
 	if ok {
 		return client, closeFn(client)
 	}
 	//Context(r http.Request)が呼ばれなければここが通る
-	//context.Contextに格納していなければ*storage.Clientを新規作成
-	client = storage2.StorageClient(ctx)
+	//context.Contextに格納していなければ*storage3.Clientを新規作成
+	client = storage.StorageClient(ctx)
 	return client, closeFn(client)
 }
 
-func (p *AppProvider) provideDatastoreOperator(ctx context.Context) *datastore2.Operator {
+func (p *AppProvider) ProvideDatastoreOperator(ctx context.Context) datastore.DatastoreOperator {
 	client, _ := p.datastoreClientWithFinalizer(ctx)
-	return datastore2.ProvideDatastoreOperator(client)
+	return datastore.ProvideDatastoreOperator(client)
 }
 
-func (p *AppProvider) datastoreClientWithFinalizer(ctx context.Context) (*datastore.Client, finalizer) {
-	closeFn := func(c *datastore.Client) finalizer { // finalizer func() error関数を返す関数をスコープ内に生成
+func (p *AppProvider) datastoreClientWithFinalizer(ctx context.Context) (*datastore3.Client, finalizer) {
+	closeFn := func(c *datastore3.Client) finalizer { // finalizer func() error関数を返す関数をスコープ内に生成
 		return func() error {
 			go c.Close()
 			return nil
 		}
 	}
 	//すでにcontext.Contextに格納されているclientがあるならば新規で作成しない
-	//context.Contextに格納している*storage.Clientを取得
-	client, ok := ctx.Value(datastoreClientKey).(*datastore.Client)
+	//context.Contextに格納している*storage3.Clientを取得
+	client, ok := ctx.Value(datastoreClientKey).(*datastore3.Client)
 	if ok {
 		return client, closeFn(client)
 	}
 	//Context(r http.Request)が呼ばれなければここが通る
-	//context.Contextに格納していなければ*storage.Clientを新規作成
-	client = datastore2.DatastoreClient(ctx)
+	//context.Contextに格納していなければ*storage3.Clientを新規作成
+	client = datastore.DatastoreClient(ctx)
 	return client, closeFn(client)
 }
