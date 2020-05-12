@@ -1,11 +1,12 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"reflect"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/taisukeyamashita/test/lib"
 	"github.com/taisukeyamashita/test/lib/errs"
 	"github.com/taisukeyamashita/test/lib/server"
 )
@@ -21,19 +22,24 @@ type ControllerBase struct {
 	Echo     *echo.Echo
 	Provider server.Provider
 }
+
 // ControllerBase implement http.Handler
 var _ http.Handler = ControllerBase{}
 
 // ServeHTTP implements `http.Handler` interface, which serves HTTP requests.
 func (controller ControllerBase) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	c.Echo.ServeHTTP(w, r)
+	controller.Echo.ServeHTTP(w, r)
 }
 
 // NewController Controllerを作成
 func NewController(provider server.Provider) ControllerBase {
 	e := echo.New()
-	base := ControllerBase{Engine: e, Provider: provider}
+	base := ControllerBase{Echo: e, Provider: provider}
 
+	e.Use(
+		middleware.Logger(),
+		middleware.Recover(),
+	)
 	// BEFORE middlewares
 	e.Use(
 		// HandlerFuncの実行前処理
@@ -57,12 +63,12 @@ func (controller ControllerBase) AddRoutes(group *echo.Group, router interface{}
 		method := reflectedRouter.Method(index)
 
 		result := method.Call([]reflect.Value{providerValue})
-		route := result[0].Interface().(Route)
+		route := result[0].Interface().(lib.Route)
 		controller.addRoute(group, route)
 	}
 }
 
-func (controller ControllerBase) addRoute(group *echo.Group, route Route) {
+func (controller ControllerBase) addRoute(group *echo.Group, route lib.Route) {
 	controller.addEndPoints("GET", group, route.Gets)
 	controller.addEndPoints("POST", group, route.Posts)
 	controller.addEndPoints("PUT", group, route.Puts)
@@ -70,20 +76,27 @@ func (controller ControllerBase) addRoute(group *echo.Group, route Route) {
 	controller.addEndPoints("PATCH", group, route.Patches)
 }
 
-func (controller ControllerBase) addEndPoints(method string, group *echo.Group, endPoints []EndPoint) {
+// *echo.Groupに[]lib.EndPointの'Path'と'Handler(lib.EndPointHandler)'を追加する
+// addEndPoints '*echo'の'*Router'に'echo.HandlerFunc'と'endPoint.Path'を追加する
+func (controller ControllerBase) addEndPoints(method string, group *echo.Group, endPoints []lib.EndPoint) {
 	for _, endPoint := range endPoints {
+		//groupにそれぞれrangeで追加していく
 		group.Add(method, endPoint.Path, controller.endPointHandlerToEchoHandler(endPoint.Handler))
 	}
 }
 
-func (controller ControllerBase) endPointHandlerToEchoHandler(handler endPointHandler) echo.HandlerFunc {
-	return func(context echo.Context) error {
+// 'echo.HandlerFunc{ func(Context) error }'を'endPoint.Handler( lib.EndPointHandler )'から作成する
+func (controller ControllerBase) endPointHandlerToEchoHandler(handler lib.EndPointHandler) echo.HandlerFunc {
+	return func(context echo.Context) error { // HandlerFuncは、HTTPリクエストを処理する関数を定義します。
 		// l := controller.Provider.Logger(context.Request().Context())
-		r, e := handler(newContext(context, l))
-		if e != nil {
-			return errs.WrapXerror(e)
+		// r, e := handler(newContext(context, l))
+
+		// 独自に定義したRerendererを返すようにする
+		rerender, err := handler(context)
+		if err != nil {
+			return errs.WrapXerror(err)
 		}
-		return r.Render(context)
+		return rerender.Render(context)
 	}
 }
 
@@ -129,12 +142,12 @@ func (controller ControllerBase) withContextGen() echo.MiddlewareFunc {
 					return
 				}
 				// 名前付き返り値であるerrに上書き
-				err = fmt.Errorf("Failed to close: %v, the original error was %v", cerr, err)
+				err = errs.WrapXerror(ferr)
 			}() // カッコ'()'で実行（※関数型変数fをf()で実行するイメージ）
 
 			// WithContext : 引数のctxに書き換えた*http.Requestの'コピー'を新規で生成する
 			// SetRequest : 引数の*http.Requestをecho.Contextにセットする
-			c.SetRequest(c.Request().WithContext(WithContext))
+			c.SetRequest(c.Request().WithContext(ctx))
 			// ↑ BEFORE
 			// この場合、HandlerFuncが実行されてReturnとなる
 			return next(c) // HandlerFunc : func(Context) error
@@ -165,7 +178,8 @@ func (controller ControllerBase) withProviderFinalizer() echo.MiddlewareFunc {
 func (controller ControllerBase) withProviderClient() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			controller.Provider.
+			// TODO: ミドルウェアでプロバイダーにClientをもたせるようにする。
+			// controller.Provider.ProvideStorageOperator().
 
 			// ↑ BEFORE
 			err := next(c) // HandlerFunc : func(Context) error

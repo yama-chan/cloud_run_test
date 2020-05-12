@@ -32,14 +32,15 @@ type AppProvider struct {
 	Datastore datastore.DatastoreOperator
 }
 
-var _ server.Provider = &AppProvider{}
-
 type finalizer func() error
 
 // NewAppProvider アプリケーションのプロバイダーを新規生成
 func NewAppProvider() *AppProvider {
 	return &AppProvider{}
 }
+
+// AppProvider implements server.Provider
+var _ server.Provider = &AppProvider{}
 
 // TestUsecase テストユースケースを提供
 func (p *AppProvider) TestUsecase(ctx context.Context) *testusecase.TestUsecase {
@@ -56,6 +57,7 @@ func (p *AppProvider) Context(r *http.Request) context.Context {
 		datastore, dsFinalizer    = p.datastoreClientWithFinalizer(ctx)
 		storage, storageFinalizer = p.storageClientWithFinalizer(ctx)
 	)
+	// TODO:　 clientはできればProviderに持たせるように修正する
 	// context に各clientを格納
 	ctx = context.WithValue(ctx, datastoreClientKey, datastore)
 	ctx = context.WithValue(ctx, storageClientKey, storage)

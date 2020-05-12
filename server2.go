@@ -17,11 +17,11 @@ func main2() {
 
 	var provider server.Provider
 	if env.OnLocalDevServer {
-		// ローカルサーバの場合
+		// ローカルサーバの場合の処理
 	} else {
 		provider = provider2.NewAppProvider()
 	}
-
+	// コントローラーベース(http.Handler)/ミドルウェアの実行
 	controllerBase := controller.NewController(provider)
 	application.Run(
 		test.NewController(controllerBase),
