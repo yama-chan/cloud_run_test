@@ -15,15 +15,18 @@ const (
 func TestRouter(e *echo.Echo) {
 	e.Logger.Print("testUsecase")
 	// out, err := exec.Command("gcloud", "config", "list").Output()
-	e.GET("/user", func(c echo.Context) error {
-		provider := provider.NewAppProvider()
-		ctx := provider.Context(c.Request())
-		return provider.TestUsecase(ctx).Insert(ctx)
-	})
+	e.GET("/user", insert)
 	api := e.Group("/api")
-	api.GET("/hello", func(c echo.Context) error {
-		out := "Hello World"
-		e.Logger.Print("http://localhost:8080/api/hello")
-		return c.String(http.StatusOK, string(out))
-	})
+	api.GET("/hello", helloWorld)
+}
+
+func insert(c echo.Context) error {
+	provider := provider.NewAppProvider()
+	ctx := provider.Context(c.Request())
+	return provider.TestUsecase(ctx).Insert(ctx)
+}
+
+func helloWorld(c echo.Context) error {
+	out := "Hello World"
+	return c.String(http.StatusOK, string(out))
 }
