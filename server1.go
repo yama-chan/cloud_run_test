@@ -1,12 +1,11 @@
 package main
 
 import (
-	"log"
 	"os"
-	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/taisukeyamashita/test/lib/times"
 	"github.com/taisukeyamashita/test/routes"
 )
 
@@ -27,18 +26,11 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	e.Logger.Fatal(e.Start(":" + port))
+	e.Logger.Info(e.Start(":" + port))
 }
 
 // 初期化を行います。
 //echoインスタンスが初期化される前、main関数が実行される後に実行される
 func init() {
-	initializeTime()
-}
-
-// ローカル時間を初期化
-func initializeTime() {
-	// UTCになるので明示的にJST変換する
-	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
-	log.Println("server.go = initialTime() called !!")
+	times.SetJSTTime()
 }

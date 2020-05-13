@@ -52,7 +52,7 @@ func (p *AppProvider) TestUsecase(ctx context.Context) *testusecase.TestUsecase 
 func (p *AppProvider) Context(r *http.Request) context.Context {
 	ctx := r.Context()
 	// context からGCPサービスのclientとfinalizer関数を生成
-	// しかし、すでにcontext.Contextにclientがあるならば新規で作成しないように実装すること
+	// しかし、現状の実装ならcontext.Contextにclientがあるならば新規で作成しないように実装することになる
 	var (
 		datastore, dsFinalizer    = p.datastoreClientWithFinalizer(ctx)
 		storage, storageFinalizer = p.storageClientWithFinalizer(ctx)

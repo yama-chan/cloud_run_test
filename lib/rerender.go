@@ -100,15 +100,3 @@ type EndPoint struct {
 func NewEndPoint(path string, handler EndPointHandler) EndPoint {
 	return EndPoint{Path: path, Handler: handler}
 }
-
-// Route ルート
-type Route struct {
-	Gets    []EndPoint
-	Posts   []EndPoint
-	Puts    []EndPoint
-	Deletes []EndPoint
-	Patches []EndPoint
-}
-
-// Router ルーター
-type Router interface{}

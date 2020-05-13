@@ -10,3 +10,9 @@ import (
 var CurrentTime = func() time.Time {
 	return time.Now()
 }
+
+// ローカル時間を初期化
+func SetJSTTime() {
+	// UTCになるので明示的にJST変換する
+	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
+}

@@ -8,14 +8,9 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/taisukeyamashita/test/lib"
 	"github.com/taisukeyamashita/test/lib/errs"
+	"github.com/taisukeyamashita/test/lib/route"
 	"github.com/taisukeyamashita/test/lib/server"
 )
-
-// Controller コントローラ
-type Controller interface {
-	RegistControllers(mux *http.ServeMux)
-	ServeHTTP(w http.ResponseWriter, r *http.Request)
-}
 
 // ControllerBase 既定コントローラ
 type ControllerBase struct {
@@ -57,7 +52,7 @@ func NewController(provider server.Provider) ControllerBase {
 
 // AddRoutes Route登録(各コントローラーで実行される)
 // '各コントローラーを１グループ'として'*echo.Group'に追加していく
-// 第２引数の'router interface{}'で指定した型で定義している関数を実行して、'lib.Route'を取得
+// 第２引数の'router interface{}'で指定した型で定義している関数を実行して、'route.Route'を取得
 func (controller ControllerBase) AddRoutes(group *echo.Group, router interface{}) {
 	// TODO: コントローラごとにルータ型を定義するようにする。最小限で関数をcallする
 	reflectedRouter := reflect.ValueOf(router).Elem()
@@ -66,12 +61,12 @@ func (controller ControllerBase) AddRoutes(group *echo.Group, router interface{}
 		method := reflectedRouter.Method(index)
 
 		result := method.Call([]reflect.Value{providerValue})
-		route := result[0].Interface().(lib.Route)
+		route := result[0].Interface().(route.Route)
 		controller.addRoute(group, route)
 	}
 }
 
-func (controller ControllerBase) addRoute(group *echo.Group, route lib.Route) {
+func (controller ControllerBase) addRoute(group *echo.Group, route route.Route) {
 	controller.addEndPoints("GET", group, route.Gets)
 	controller.addEndPoints("POST", group, route.Posts)
 	controller.addEndPoints("PUT", group, route.Puts)

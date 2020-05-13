@@ -3,7 +3,8 @@ package test
 import (
 	"net/http"
 
-	lib "github.com/taisukeyamashita/test/lib/controller"
+	"github.com/taisukeyamashita/test/lib"
+	"github.com/taisukeyamashita/test/lib/controller"
 	"github.com/taisukeyamashita/test/lib/logger/logrus"
 	"github.com/taisukeyamashita/test/routes"
 )
@@ -13,7 +14,7 @@ type Controller struct {
 	// https://medium.com/eureka-engineering/golang-embedded-ac43201cf772
 	// lib.Controllerインタフェースを満たすようにlib.ControllerBase構造体を埋め込む(※フィールド名を記載しないこと)
 	// 埋め込んだことにより、lib.ControllerBase構造体で定義してるメソッドも実行できる
-	lib.ControllerBase
+	controller.ControllerBase
 	controllerName string
 }
 
@@ -24,7 +25,7 @@ var _ lib.Controller = Controller{}
 var _ http.Handler = Controller{}
 
 // NewController 機能用コントローラー作成
-func NewController(controller lib.ControllerBase) Controller {
+func NewController(controller controller.ControllerBase) Controller {
 	return Controller{controller, "testController"}
 }
 

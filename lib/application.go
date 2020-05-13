@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/taisukeyamashita/test/lib/controller"
 	"github.com/taisukeyamashita/test/lib/env"
 )
 
@@ -25,7 +24,7 @@ func (application Application) Initialize() {
 }
 
 // Run Application実行
-func (application Application) Run(controllers ...controller.Controller) {
+func (application Application) Run(controllers ...Controller) {
 	registControllers := application.BuildRouter(controllers...)
 	port := application.env.Port()
 	if port == "" {
@@ -36,7 +35,7 @@ func (application Application) Run(controllers ...controller.Controller) {
 }
 
 // BuildRouter ルーターを構築する
-func (application Application) BuildRouter(controllers ...controller.Controller) http.Handler {
+func (application Application) BuildRouter(controllers ...Controller) http.Handler {
 	mux := http.NewServeMux()
 	for _, controller := range controllers {
 		controller.RegistControllers(mux)

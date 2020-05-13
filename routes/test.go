@@ -7,16 +7,10 @@ import (
 	"github.com/taisukeyamashita/test/lib/server/provider"
 )
 
-const (
-	//日付フォーマット
-	format = "2006/01/02 15:04:05" // 24h表現、0埋めあり
-)
-
 func TestRouter(e *echo.Echo) {
 	e.Logger.Print("testUsecase")
-	// out, err := exec.Command("gcloud", "config", "list").Output()
-	e.GET("/user", insert)
 	api := e.Group("/api")
+	api.GET("/user", insert)
 	api.GET("/hello", helloWorld)
 }
 
