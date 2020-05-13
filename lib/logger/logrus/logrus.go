@@ -92,6 +92,7 @@ func (l logrusLogger) Panic(message string) {
 
 func getCaller() string {
 	pc, file, line, _ := runtime.Caller(2)
+
 	fmt.Printf("pc : %v", pc)
 	fmt.Printf("file : %v", file)
 	fmt.Printf("line : %v", line)
@@ -103,13 +104,15 @@ func getCaller() string {
 	// )
 
 	f := runtime.FuncForPC(pc)
-	splitedFnName := strings.Split(f.Name(), ".")
+	fnName := f.Name()
+	splitedFnName := strings.Split(fnName, ".")
 	packageName := splitedFnName[0]
 	callerFuncName := splitedFnName[1]
+
 	log.Printf("f: %v\n", f)
 	log.Printf("packageName: %s\n", packageName)
 	log.Printf("functionName: %s\n", callerFuncName)
 
-	return fmt.Sprintf("%s#%s:L%v", file, f.Name(), line)
+	return fmt.Sprintf("file=%s、pkg=%s、func=%s、line=%v", file, packageName, callerFuncName, line)
 	// return fmt.Sprintf("%s\n#%s:L%v", file, funcName, line)
 }

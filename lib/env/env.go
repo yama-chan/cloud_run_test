@@ -71,7 +71,7 @@ var (
 
 // GetEnvValues リソースを取得する
 func GetEnvValues(config InitializeConfig) EnvValues {
-	// ファイルをロック
+	// 取得時はファイルをロック
 	applicationEnvValuesMux.Lock()
 	defer applicationEnvValuesMux.Unlock()
 

@@ -20,7 +20,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	//routes.AddRoutersで呼び出し
-	//簡単なマイクロサービスならこのルーティングを使用できそう
+	//ルータを振り分けて登録させる
 	routes.AddRouters(e)
 	// サーバーをポート8080で起動
 	port := os.Getenv("PORT")

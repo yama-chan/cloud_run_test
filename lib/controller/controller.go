@@ -55,8 +55,11 @@ func NewController(provider server.Provider) ControllerBase {
 	return base
 }
 
-// AddRoutes Route登録
+// AddRoutes Route登録(各コントローラーで実行される)
+// '各コントローラーを１グループ'として'*echo.Group'に追加していく
+// 第２引数の'router interface{}'で指定した型で定義している関数を実行して、'lib.Route'を取得
 func (controller ControllerBase) AddRoutes(group *echo.Group, router interface{}) {
+	// TODO: コントローラごとにルータ型を定義するようにする。最小限で関数をcallする
 	reflectedRouter := reflect.ValueOf(router).Elem()
 	providerValue := reflect.ValueOf(controller.Provider)
 	for index := 0; index < reflectedRouter.NumMethod(); index++ {

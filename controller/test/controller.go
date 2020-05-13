@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	lib "github.com/taisukeyamashita/test/lib/controller"
+	"github.com/taisukeyamashita/test/lib/logger/logrus"
 	"github.com/taisukeyamashita/test/routes"
 )
 
@@ -29,10 +30,11 @@ func NewController(controller lib.ControllerBase) Controller {
 
 // RegistControllers コントローラーを登録する
 func (controller Controller) RegistControllers(mux *http.ServeMux) {
+	logrus.NewLogger().Info(controller.controllerName + " is registered")
 	basePath := "/api/test/"
-	// 埋め込んだことにより、lib.ControllerBase構造体で定義してるフィールドにもアクセスできる
+	// 埋め込まれている'lib.ControllerBase構造体'で定義してる'フィールド'にも直接アクセスできる
 	adminGroup := controller.Echo.Group(basePath)
-	// 埋め込んだことにより、lib.ControllerBase構造体で定義してるメソッドも実行できる
+	// 埋め込まれている'lib.ControllerBase構造体'で定義してる'メソッド'も直接実行できる
 	controller.AddRoutes(adminGroup, routes.Router{})
 	mux.Handle(basePath, controller)
 }
