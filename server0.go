@@ -84,7 +84,7 @@ var (
 // Cookie型のstore情報
 var store *sessions.CookieStore
 
-func _main() {
+func main0() {
 
 	//************ Echo ************ satrt
 	// Echoのインスタンスを生成
