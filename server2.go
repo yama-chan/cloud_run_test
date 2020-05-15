@@ -30,13 +30,4 @@ func main2() {
 
 // 初期化を行います。
 //echoインスタンスが初期化される前、main関数が実行される後に実行される
-func init() {
-	// initializeTime()
-}
-
-// 初期化
-// func initializeTime() {
-// 	// UTCになるので明示的にJST変換する
-// 	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
-// 	log.Println("server.go = initialTime() called !!")
-// }
+func init() {}

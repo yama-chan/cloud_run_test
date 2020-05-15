@@ -37,7 +37,7 @@ func (t TestUsecase) Insert(ctx context.Context) error {
 		Fullname:         "test２",
 		LastModifiedDate: times.CurrentTime().Format(format),
 	}
-	validate.ValidateStruct(user)
+	validate.ValidateStruct(user) // バリデート
 	putErr := t.DatastoreOperator.Put(ctx, &user)
 	if putErr != nil {
 		//  「: %v」 とすることで既存のerrorの情報を出力する

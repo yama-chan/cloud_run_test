@@ -26,7 +26,8 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	e.Logger.Info(e.Start(":" + port))
+	// ルーティングしている最中でエラーがあれば、os.Exitが呼ばれる
+	e.Logger.Fatal(e.Start(":" + port))
 }
 
 // 初期化を行います。
