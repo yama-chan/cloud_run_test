@@ -39,7 +39,7 @@ func NewController(provider server.Provider) ControllerBase {
 	e.Use(
 		// HandlerFuncの実行前処理
 		base.withContextGen(),
-		// TODO: recover()の処理をできれば定義したい
+		// TODO: recover()の処理をできれば定義したい、その後にmiddleware.Recover()を削除
 		// base.withCustomRecover(),
 	)
 

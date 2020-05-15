@@ -1,15 +1,15 @@
 package routes
 
 import (
-	"github.com/labstack/echo/v4"
+	"github.com/taisukeyamashita/test/lib/controller"
 )
 
 // Router セキュア機能用ルーター
 type Router struct{}
 
-// EchoにRouteを追加
-func AddRouters(e *echo.Echo) {
-	TestRouter(e)
+// AddRouters EchoにRouteを追加
+func AddRouters(c controller.ControllerBase) {
+	TestRouter(c)
 	// UserRouter1(e)
 	// UserRouter2(e)
 	// UserRouter3(e)

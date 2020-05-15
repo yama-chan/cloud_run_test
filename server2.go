@@ -6,7 +6,7 @@ import (
 	"github.com/taisukeyamashita/test/lib/controller"
 	"github.com/taisukeyamashita/test/lib/env"
 	"github.com/taisukeyamashita/test/lib/server"
-	provider2 "github.com/taisukeyamashita/test/lib/server/provider"
+	"github.com/taisukeyamashita/test/lib/server/provider"
 )
 
 func main2() {
@@ -15,14 +15,14 @@ func main2() {
 	application.Initialize()
 	defer application.Finalize()
 
-	var provider server.Provider
+	var prov server.Provider
 	if env.OnLocalDevServer {
 		// ローカルサーバの場合の処理
 	} else {
-		provider = provider2.NewAppProvider()
+		prov = provider.NewAppProvider()
 	}
 	// コントローラーベース(http.Handler)/ミドルウェアの実行
-	controllerBase := controller.NewController(provider)
+	controllerBase := controller.NewController(prov)
 	application.Run(
 		test.NewController(controllerBase),
 	)
