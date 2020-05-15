@@ -3,7 +3,6 @@ package env
 import (
 	"os"
 	"sync"
-	"time"
 
 	"github.com/taisukeyamashita/test/lib/config"
 )
@@ -87,8 +86,6 @@ func (env *envCloudRun) Initialize() {
 	env.initializeOnce.Do(func() {
 		// アプリケーションの関心事に関する設定情報(config.go)を初期化
 		env.initializeConfig()
-		// UTCになるので明示的にJST変換する
-		time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
 	})
 }
 

@@ -31,9 +31,10 @@ func NewController(provider server.Provider) ControllerBase {
 	e := echo.New()
 	base := ControllerBase{Echo: e, Provider: provider}
 
+	// 標準ミドルウェアを設定
 	e.Use(
-		middleware.Logger(),
-		middleware.Recover(),
+		middleware.Logger(),  //全てのリクエストについてアクセスログを取得
+		middleware.Recover(), //アプリケーションの内部でpanicが発生した場合でも、一律共通のエラーハンドラに処理を飛ばす
 	)
 	// BEFORE middlewares
 	e.Use(

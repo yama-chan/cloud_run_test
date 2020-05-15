@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/taisukeyamashita/test/lib/env"
+	"github.com/taisukeyamashita/test/lib/times"
 )
 
 // Application アプリケーション
@@ -15,6 +16,8 @@ type Application struct {
 
 // NewApplication 新しいアプリケーションを作成
 func NewApplication(env env.EnvValues) Application {
+	// デフォルトでUTCになるのでJSTに設定
+	times.SetJSTTime()
 	return Application{env: env}
 }
 
