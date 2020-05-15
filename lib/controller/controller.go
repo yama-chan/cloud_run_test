@@ -39,6 +39,7 @@ func NewController(provider server.Provider) ControllerBase {
 	e.Use(
 		// HandlerFuncの実行前処理
 		base.withContextGen(),
+		// TODO: recover()の処理をできれば定義したい
 		// base.withCustomRecover(),
 	)
 
@@ -55,7 +56,7 @@ func NewController(provider server.Provider) ControllerBase {
 // 第２引数の'router interface{}'で指定した型で定義している関数を実行して、'route.Route'を取得
 func (controller ControllerBase) AddRoutes(group *echo.Group, router interface{}) {
 	// TODO: コントローラごとにルータ型を定義するようにする。最小限で関数をcallする
-	reflectedRouter := reflect.ValueOf(router).Elem()
+	reflectedRouter := reflect.ValueOf(router)
 	providerValue := reflect.ValueOf(controller.Provider)
 	for index := 0; index < reflectedRouter.NumMethod(); index++ {
 		method := reflectedRouter.Method(index)

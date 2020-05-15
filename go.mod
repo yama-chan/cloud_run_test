@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go/firestore v1.2.0
 	cloud.google.com/go/storage v1.6.0
 	firebase.google.com/go v3.12.1+incompatible
+	github.com/go-playground/validator/v10 v10.2.0
 	github.com/gorilla/sessions v1.2.0
 	github.com/labstack/echo-contrib v0.6.0
 	github.com/labstack/echo/v4 v4.1.11

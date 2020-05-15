@@ -12,14 +12,14 @@ type User struct {
 
 //※一覧にて表示するため変数名を大文字で始めることでpublicな変数として扱う。
 type UserInf struct {
-	ID               string
-	Fullname         string
+	ID               string `validate:"required"`
+	Fullname         string `validate:"required"`
 	Sex              string
 	Email            string
 	Department       string
 	Description      string
 	RegisteredDate   string
-	LastModifiedDate string
+	LastModifiedDate string `validate:"required"`
 	IsDeleted        bool
 	IconURL          string
 	EncodedKey       string

@@ -31,11 +31,12 @@ func NewController(controller controller.ControllerBase) Controller {
 
 // RegistControllers コントローラーを登録する
 func (controller Controller) RegistControllers(mux *http.ServeMux) {
-	logrus.NewLogger().Info(controller.controllerName + " is registered")
 	basePath := "/api/test/"
 	// 埋め込まれている'lib.ControllerBase構造体'で定義してる'フィールド'にも直接アクセスできる
 	adminGroup := controller.Echo.Group(basePath)
 	// 埋め込まれている'lib.ControllerBase構造体'で定義してる'メソッド'も直接実行できる
 	controller.AddRoutes(adminGroup, routes.Router{})
 	mux.Handle(basePath, controller)
+	// TODO:  providerにloggerをもたせてログ出力を行えるようにする
+	logrus.NewLogger().Info(controller.controllerName + " is registered")
 }

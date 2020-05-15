@@ -8,6 +8,7 @@ import (
 	"github.com/taisukeyamashita/test/lib/errs"
 	"github.com/taisukeyamashita/test/lib/times"
 	utils "github.com/taisukeyamashita/test/lib/util"
+	"github.com/taisukeyamashita/test/lib/validate"
 	"github.com/taisukeyamashita/test/model"
 	"github.com/taisukeyamashita/test/usecase"
 )
@@ -36,6 +37,7 @@ func (t TestUsecase) Insert(ctx context.Context) error {
 		Fullname:         "test２",
 		LastModifiedDate: times.CurrentTime().Format(format),
 	}
+	validate.ValidateStruct(user)
 	putErr := t.DatastoreOperator.Put(ctx, &user)
 	if putErr != nil {
 		//  「: %v」 とすることで既存のerrorの情報を出力する
