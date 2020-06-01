@@ -10,6 +10,7 @@ type Router struct{}
 // AddRouters EchoにRouteを追加
 func AddRouters(c controller.ControllerBase) {
 	TestRouter(c)
+	MailRouter(c)
 	// UserRouter1(e)
 	// UserRouter2(e)
 	// UserRouter3(e)

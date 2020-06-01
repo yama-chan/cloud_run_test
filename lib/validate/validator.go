@@ -15,8 +15,11 @@ var (
 	// ファイルが読み込まれるたび（バリデーションが実行されるたびに）に、変数'vd' *validator.Validate を初期化する
 	vd = func() *validator.Validate {
 		v := validator.New()
+
+		// カスタムバリデーションを生成
 		v.RegisterValidation("date", dateValidation)
 		v.RegisterValidation("datetime", datetimeValidation)
+
 		// v.RegisterValidation("date_range", dateRangeValidation) // TODO: モデル独自で　Validate関数を持ってもいいかも
 		log.Printf("validator is initialized")
 		return v
@@ -24,6 +27,7 @@ var (
 )
 
 // 構造体のフィールドバリデート
+
 // ValidateStruct validates a structs exposed fields, and automatically validates nested structs
 func ValidateStruct(v interface{}) error {
 	// TODO: フィールドにtime.Time型がある場合のバリデートはどうなるのか? 調査・検証する

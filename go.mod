@@ -14,6 +14,8 @@ require (
 	github.com/labstack/echo/v4 v4.1.11
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/rs/xid v1.2.1
+	github.com/sendgrid/rest v2.4.1+incompatible // indirect
+	github.com/sendgrid/sendgrid-go v3.5.0+incompatible
 	github.com/sirupsen/logrus v1.6.0
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543

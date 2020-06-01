@@ -17,11 +17,14 @@ var _ EnvValues = new(envCloudRun)
 
 // InitializeConfig appengin用コンフィグ
 type InitializeConfig struct {
-	DATASTORE     DatastoreConfig
-	GCS           GCSConfig
-	Port          string
-	TemplateDir   string //templateの格納ディレクトリ ※環境変数で設定
-	IndexFileName string //"index.html"
+	DATASTORE          DatastoreConfig
+	GCS                GCSConfig
+	Port               string
+	TemplateDir        string //templateの格納ディレクトリ ※環境変数で設定
+	IndexFileName      string //"index.html"
+	SendGridAPIKey     string
+	SendGridTemplateID string
+	EmailFromAddress   string
 }
 
 // Cloud Runのデフォルト環境変数を取得
@@ -55,9 +58,12 @@ func CreateInitializeConfig() InitializeConfig {
 			CsvBucketFilePath: GetEnvString("CSV_BUCKET_FILE_PATH", ""),
 			TemplateBucket:    GetEnvString("TEMPLATE_BUCKET", ""),
 		},
-		Port:          MustGetString("PORT"),
-		TemplateDir:   GetEnvString("TEMPLATE_DIR", ""),
-		IndexFileName: GetEnvString("INDEX_FILE_NAME", ""),
+		Port:               MustGetString("PORT"),
+		TemplateDir:        GetEnvString("TEMPLATE_DIR", ""),
+		IndexFileName:      GetEnvString("INDEX_FILE_NAME", ""),
+		SendGridAPIKey:     GetEnvString("SENDGRID_API_KEY", ""),
+		SendGridTemplateID: GetEnvString("SENDGRID_TEMPLATE_ID", ""),
+		EmailFromAddress:   GetEnvString("EMAIL_FROM_ADDRESS", ""),
 	}
 }
 
@@ -98,6 +104,9 @@ func (env *envCloudRun) initializeConfig() {
 		env.config.GCS.TemplateBucket,
 		env.config.TemplateDir,
 		env.config.IndexFileName,
+		env.config.SendGridAPIKey,
+		env.config.SendGridTemplateID,
+		env.config.EmailFromAddress,
 	)
 }
 
