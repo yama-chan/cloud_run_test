@@ -35,7 +35,7 @@ func (h *MailHandler) send(c echo.Context) error {
 	err := sendgrid.Send(ctx, mail.EmailSenderConfig{
 		Message: mail.Message{
 			Title: "テスト タイトル",
-			Body:  "テスト　ボディ",
+			// Body:  "テスト　ボディ",
 			// RegisteredAt: time.Time `validate:"required"` // 作成日時
 		},
 		FromName:  config.EmailFromName,
