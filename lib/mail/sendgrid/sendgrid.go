@@ -89,12 +89,16 @@ func (e EmailSender) SendEmail(ctx context.Context, conf mail.EmailSenderConfig)
 	sConf := sendGridEmailConf(conf)
 
 	var (
+		// 送信クライアント
 		client = sendgrid.NewSendClient(config.SendGridAPIKey)
-		from   = sConf.createFrom()
-		tos    = sConf.createToPersonalizations()
+		// 送信元
+		from = sConf.createFrom()
+		// 送信先
+		tos = sConf.createToPersonalizations()
 	)
 	message := sConf.createMailMessage(from, tos)
 	log.Print("email is about to send", message)
+	// 送信
 	resp, err := client.Send(message)
 	log.Print("email response: ", resp)
 	if err != nil {
@@ -102,6 +106,8 @@ func (e EmailSender) SendEmail(ctx context.Context, conf mail.EmailSenderConfig)
 	}
 	if err != nil {
 		return err
+		// ステータスコードが200（正常）以外の場合はエラーとする
+		// https://sendgrid.kke.co.jp/docs/API_Reference/Web_API_v3/Mail/errors.html
 	} else if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
 		return fmt.Errorf("SendGrid送信エラー: code=%v", resp.StatusCode)
 	}
@@ -109,15 +115,18 @@ func (e EmailSender) SendEmail(ctx context.Context, conf mail.EmailSenderConfig)
 	return nil
 }
 
+// createFrom メールの送信元を設定する
 func (s sendGridEmailConf) createFrom() *sgMail.Email {
 	return sgMail.NewEmail(s.FromName, s.FromEmail)
 }
 
+// createToPersonalizations メールの送信先を設定する
 func (s sendGridEmailConf) createToPersonalizations() []*sgMail.Personalization {
 	personalizations := make([]*sgMail.Personalization, len(s.To))
 	for i, to := range s.To {
 		p := sgMail.NewPersonalization()
 		p.AddTos(sgMail.NewEmail("", to)) // とりあえず名前は未設定で
+		// 今回はテンプレート用の動的データをここで作成する
 		data := struct {
 			Email string `json:"email"`
 			Name  string `json:"name"`
@@ -125,6 +134,7 @@ func (s sendGridEmailConf) createToPersonalizations() []*sgMail.Personalization 
 			Email: "test@example.com",
 			Name:  to,
 		}
+		// ダイナミックテンプレートにデータをセット
 		p.SetDynamicTemplateData("data", data)
 		personalizations[i] = p
 	}
