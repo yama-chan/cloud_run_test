@@ -2,7 +2,9 @@ package sendgrid
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/sendgrid/sendgrid-go"
 	sgMail "github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -93,16 +95,16 @@ func (e EmailSender) SendEmail(ctx context.Context, conf mail.EmailSenderConfig)
 	)
 	message := sConf.createMailMessage(from, tos)
 	log.Print("email is about to send", message)
-	res, err := client.Send(message)
-	log.Print("email response: ", res)
+	resp, err := client.Send(message)
+	log.Print("email response: ", resp)
 	if err != nil {
 		return errs.WrapXerror(err)
 	}
-	// if resp, err := client.Send(message); err != nil {
-	// 	return errs.WrapXerror(err)
-	// } else if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
-	// 	return errs.WrapXerror(err)
-	// }
+	if err != nil {
+		return err
+	} else if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+		return fmt.Errorf("SendGrid送信エラー: code=%v", resp.StatusCode)
+	}
 	log.Print("email send success")
 	return nil
 }
